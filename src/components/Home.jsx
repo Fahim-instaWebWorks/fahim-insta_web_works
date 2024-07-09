@@ -1,7 +1,29 @@
-import { Autocomplete, Box, Checkbox, FormControlLabel, FormGroup, TextField, Typography } from "@mui/material";
-import React from "react";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useState } from "react";
 
-const Home = () => {
+const Home = ({documentList}) => {
+  const [selectedDocumment,setSelectedDocument] = useState(null)
+  const [fileType,setFileType] = useState('')
+
+  const handleChange = (event, value) => {
+    // Find the selected document object based on the document name
+    const document = documentList.find(doc => doc.document_name === value);
+    setSelectedDocument(document);
+    console.log(document); // You can use the selected document object as needed
+  };
+
+  const handleSelectFileType = (event,value) =>{
+    setFileType(value)
+  }
   return (
     <Box>
       <Typography variant="h5" textAlign={"left"} pl={2}>
@@ -12,18 +34,20 @@ const Home = () => {
           size="small"
           disablePortal
           id="combo-box-demo"
-          options={top100Films}
+          options={documentList.map(doc => doc.document_name)}
           sx={{ width: 480 }}
-          renderInput={(params) => <TextField {...params} label="Movie" />}
+          renderInput={(params) => <TextField {...params} label="Deal Proposal" />}
+          onChange={handleChange}
         />
 
         <Autocomplete
           size="small"
           disablePortal
           id="combo-box-demo"
-          options={top100Films}
+          options={['Pdf',"Docx"]}
           sx={{ width: 180 }}
-          renderInput={(params) => <TextField {...params} label="Movie" />}
+          renderInput={(params) => <TextField {...params} label=".Pdf" />}
+          onChange={handleSelectFileType}
         />
       </Box>
       <Typography variant="h5" textAlign={"left"} pl={2}>
@@ -35,9 +59,29 @@ const Home = () => {
             control={<Checkbox defaultChecked />}
             label="Download to Computer"
           />
-          <FormControlLabel required control={<Checkbox />} label="Save to Record" />
+          <Box display={"flex"} justifyContent={"space-between"}>
+            <FormControlLabel
+              control={<Checkbox />}
+              label="Save to Record"
+              sx={{ width: "45%" }}
+            />
+            <Autocomplete
+              size="small"
+              disablePortal
+              id="combo-box-demo"
+              options={top100Films}
+              sx={{ width: "45%" }}
+              renderInput={(params) => <TextField {...params} label="Current record" />}
+            />
+          </Box>
         </FormGroup>
       </Box>
+
+      <Box display={'flex'} justifyContent={"space-around"}>
+        <Button variant="contained" sx={{width:'48%'}}>Merge</Button>
+        <Button variant="contained" color="error" sx={{width:'48%'}}>Cencel</Button>
+      </Box>
+
     </Box>
   );
 };
