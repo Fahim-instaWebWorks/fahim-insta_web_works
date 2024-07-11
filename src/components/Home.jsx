@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-const Home = ({documentList}) => {
+const Home = ({documentList,handleMerge}) => {
   const [selectedDocumment,setSelectedDocument] = useState(null)
   const [fileType,setFileType] = useState('')
 
@@ -78,7 +78,7 @@ const Home = ({documentList}) => {
       </Box>
 
       <Box display={'flex'} justifyContent={"space-around"}>
-        <Button variant="contained" sx={{width:'48%'}}>Merge</Button>
+        <Button variant="contained" sx={{width:'48%'}} onClick={handleMerge}>Merge</Button>
         <Button variant="contained" color="error" sx={{width:'48%'}}>Cencel</Button>
       </Box>
 
