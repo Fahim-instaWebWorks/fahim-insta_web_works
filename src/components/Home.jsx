@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Autocomplete,
   Box,
@@ -8,46 +9,65 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 
-const Home = ({documentList,handleMerge}) => {
-  const [selectedDocumment,setSelectedDocument] = useState(null)
-  const [fileType,setFileType] = useState('')
+const Home = ({ documentList, handleMerge }) => {
+  const { control, handleSubmit, watch } = useForm({
+    defaultValues: {
+      selectedDocument: null,
+      fileType: '',
+      downloadToComputer: true,
+      saveToRecord: false,
+      currentRecord: null
+    }
+  });
 
-  const handleChange = (event, value) => {
-    // Find the selected document object based on the document name
-    const document = documentList.find(doc => doc.document_name === value);
-    setSelectedDocument(document);
-    console.log(document); // You can use the selected document object as needed
+  const onSubmit = data => {
+    console.log(data);
+    // handleMerge(data);
   };
 
-  const handleSelectFileType = (event,value) =>{
-    setFileType(value)
-  }
+  const selectedDocument = watch("selectedDocument");
+  const fileType = watch("fileType");
+
   return (
     <Box>
       <Typography variant="h5" textAlign={"left"} pl={2}>
         Select a Template to Merge
       </Typography>
       <Box display={"flex"} p={2} justifyContent={"space-between"}>
-        <Autocomplete
-          size="small"
-          disablePortal
-          id="combo-box-demo"
-          options={documentList.map(doc => doc.document_name)}
-          sx={{ width: 480 }}
-          renderInput={(params) => <TextField {...params} label="Deal Proposal" />}
-          onChange={handleChange}
+        <Controller
+          name="selectedDocument"
+          control={control}
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              size="small"
+              disablePortal
+              id="combo-box-demo"
+              options={documentList.map(doc => doc.document_name)}
+              sx={{ width: 480 }}
+              renderInput={(params) => <TextField {...params} label="Deal Proposal" />}
+              onChange={(event, value) => field.onChange(value)}
+            />
+          )}
         />
 
-        <Autocomplete
-          size="small"
-          disablePortal
-          id="combo-box-demo"
-          options={['Pdf',"Docx"]}
-          sx={{ width: 180 }}
-          renderInput={(params) => <TextField {...params} label=".Pdf" />}
-          onChange={handleSelectFileType}
+        <Controller
+          name="fileType"
+          control={control}
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              size="small"
+              disablePortal
+              id="combo-box-demo"
+              options={['Pdf', "Docx"]}
+              sx={{ width: 180 }}
+              renderInput={(params) => <TextField {...params} label=".Pdf" />}
+              onChange={(event, value) => field.onChange(value)}
+            />
+          )}
         />
       </Box>
       <Typography variant="h5" textAlign={"left"} pl={2}>
@@ -55,33 +75,52 @@ const Home = ({documentList,handleMerge}) => {
       </Typography>
       <Box p={2} justifyContent={"space-between"}>
         <FormGroup>
-          <FormControlLabel
-            control={<Checkbox defaultChecked />}
-            label="Download to Computer"
+          <Controller
+            name="downloadToComputer"
+            control={control}
+            render={({ field }) => (
+              <FormControlLabel
+                control={<Checkbox {...field} checked={field.value} />}
+                label="Download to Computer"
+              />
+            )}
           />
           <Box display={"flex"} justifyContent={"space-between"}>
-            <FormControlLabel
-              control={<Checkbox />}
-              label="Save to Record"
-              sx={{ width: "45%" }}
+            <Controller
+              name="saveToRecord"
+              control={control}
+              render={({ field }) => (
+                <FormControlLabel
+                  control={<Checkbox {...field} checked={field.value} />}
+                  label="Save to Record"
+                  sx={{ width: "45%" }}
+                />
+              )}
             />
-            <Autocomplete
-              size="small"
-              disablePortal
-              id="combo-box-demo"
-              options={top100Films}
-              sx={{ width: "45%" }}
-              renderInput={(params) => <TextField {...params} label="Current record" />}
+            <Controller
+              name="currentRecord"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  {...field}
+                  size="small"
+                  disablePortal
+                  id="combo-box-demo"
+                  options={top100Films}
+                  sx={{ width: "45%" }}
+                  renderInput={(params) => <TextField {...params} label="Current record" />}
+                  onChange={(event, value) => field.onChange(value)}
+                />
+              )}
             />
           </Box>
         </FormGroup>
       </Box>
 
       <Box display={'flex'} justifyContent={"space-around"}>
-        <Button variant="contained" sx={{width:'48%'}} onClick={handleMerge}>Merge</Button>
-        <Button variant="contained" color="error" sx={{width:'48%'}}>Cencel</Button>
+        <Button variant="contained" sx={{width:'48%'}} onClick={handleSubmit(onSubmit)}>Merge</Button>
+        <Button variant="contained" color="error" sx={{width:'48%'}}>Cancel</Button>
       </Box>
-
     </Box>
   );
 };
@@ -89,7 +128,7 @@ const Home = ({documentList,handleMerge}) => {
 export default Home;
 
 const top100Films = [
-  { label: "The Shawshank Redemption", year: 1994 },
+  { label: "Current Record", year: 1994 },
   { label: "The Godfather", year: 1972 },
   { label: "The Godfather: Part II", year: 1974 },
   { label: "The Dark Knight", year: 2008 },
