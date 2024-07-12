@@ -47,40 +47,62 @@ function App() {
 
   console.log("fahim", documentList[0]?.document_id);
 
-  const handleMerge = () => {
+  // const handleMerge = () => {
+  //   var conn_name = "zoho_writer_fahim";
+  //   var req_data = {
+  //     parameters: {
+  //       output_format: "docx",
+  //       response_type: "link",
+  //       merge_data: {
+  //         data: {
+  //           Deal_Name: "Test Deal 2",
+  //           Account_Name: "test",
+  //         },
+  //       },
+  //     },
+  //     headers: {},
+  //     method: "POST",
+  //     url: `https://www.zohoapis.com/writer/api/v1/documents/${documentList[0]?.document_id}/merge`,
+  //     param_type: 1,
+  //   };
+  //   ZOHO.CRM.CONNECTION.invoke(conn_name, req_data).then(function (data) {
+  //     console.log(data);
+  //     if (data?.details?.statusMessage?.URL) {
+  //       const link = document.createElement("a");
+  //       link.href = data?.details?.statusMessage?.URL;
+  //       // link.setAttribute("download", ""); // Optional: Set the file name if needed
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       document.body.removeChild(link);
+  //     }
+  //     // setDocumentList(data?.details?.statusMessage?.documents)
+  //   });
+  // };
+
+  const handleMerge = (data) => {
+    const document = documentList.find((document)=>document.document_name === data.selectedDocument)
+    console.log({document})
     var conn_name = "zoho_writer_fahim";
+    let Api_key 
+
     var req_data = {
-      parameters: {
-        output_format: "docx",
-        response_type: "link",
-        merge_data: {
-          data: {
-            Deal_Name: "Test Deal 2",
-            Account_Name: "test",
-          },
-        },
-      },
+      parameters: {},
       headers: {},
-      method: "POST",
-      url: `https://www.zohoapis.com/writer/api/v1/documents/${documentList[0]?.document_id}/merge`,
-      param_type: 1,
+      method: "GET",
+      url: `https://www.zohoapis.com/writer/api/v1/documents/${document?.document_id}/fields`,
+      param_type: 2,
     };
     ZOHO.CRM.CONNECTION.invoke(conn_name, req_data).then(function (data) {
-      console.log(data);
-      if (data?.details?.statusMessage?.URL) {
-        const link = document.createElement("a");
-        link.href = data?.details?.statusMessage?.URL;
-        // link.setAttribute("download", ""); // Optional: Set the file name if needed
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-      // setDocumentList(data?.details?.statusMessage?.documents)
-    });
-  };
+      Api_key= data?.details?.statusMessage?.merge?.map((element)=>element.id)
+      
 
-  console.log(recordId);
-  console.log(documentList);
+      // setDocumentList(data?.details?.statusMessage?.documents);
+    })
+
+    console.log({Api_key});
+  };
+  // console.log(recordId);
+  // console.log(documentList);
 
   return (
     <div className="App">

@@ -24,7 +24,7 @@ const Home = ({ documentList, handleMerge }) => {
 
   const onSubmit = data => {
     console.log(data);
-    // handleMerge(data);
+    handleMerge(data);
   };
 
   const selectedDocument = watch("selectedDocument");
