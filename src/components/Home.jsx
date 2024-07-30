@@ -62,7 +62,7 @@ const Home = ({ documentList, handleMerge }) => {
               size="small"
               disablePortal
               id="combo-box-demo"
-              options={['Pdf', "Docx"]}
+              options={['pdf', "docx"]}
               sx={{ width: 180 }}
               renderInput={(params) => <TextField {...params} label=".Pdf" />}
               onChange={(event, value) => field.onChange(value)}
